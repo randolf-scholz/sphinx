@@ -210,6 +210,11 @@ also use these config values:
 
    .. versionadded:: 3.2
 
+.. confval:: autosummary_ignore_module_all
+
+   A boolean flag indicating whether the members of ``__all__`` should be prefered over
+   the the usual member handling.
+
 
 Customizing templates
 ---------------------
