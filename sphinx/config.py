@@ -142,7 +142,7 @@ class Config:
         'tls_verify': (True, 'env', []),
         'tls_cacerts': (None, 'env', []),
         'user_agent': (None, 'env', [str]),
-        'ignore_module_all_variable': (False, 'env', []),
+        'autosummary_ignore_module_all': (False, 'env', []),
         'smartquotes': (True, 'env', []),
         'smartquotes_action': ('qDe', 'env', []),
         'smartquotes_excludes': ({'languages': ['ja'],
