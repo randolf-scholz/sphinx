@@ -68,7 +68,6 @@ class DummyApplication:
 
         self.config.add('autosummary_context', {}, True, None)
         self.config.add('autosummary_filename_map', {}, True, None)
-        self.config.add('autosummary_ignore_module_all', False, True, None)
         self.config.init_values()
 
     def emit_firstresult(self, *args: Any) -> None:
@@ -178,7 +177,6 @@ class ModuleScanner:
         self.app = app
         self.object = obj
         self.ignore_all = app.config["autosummary_ignore_module_all"]
-        logger.warning("ignore all setting %s", self.ignore_all)
 
     def get_object_type(self, name: str, value: Any) -> str:
         return get_documenter(self.app, value, self.object).objtype
@@ -442,7 +440,6 @@ def generate_autosummary_docs(sources: List[str], output_dir: str = None,
         if app:
             context.update(app.config.autosummary_context)
 
-        logger.warning("call gen autosum content for name=%s, obj=%s", name, obj)
         content = generate_autosummary_content(name, obj, parent, template, entry.template,
                                                imported_members, app, entry.recursive, context,
                                                modname, qualname)

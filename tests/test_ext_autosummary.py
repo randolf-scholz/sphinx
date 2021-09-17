@@ -229,6 +229,43 @@ def test_autosummary_generate_content_for_module(app):
 
 
 @pytest.mark.sphinx(testroot='ext-autosummary')
+@pytest.mark.parametrize("ignore_all", (True, False))
+def test_autosummary_generate_content_for_module_ignore_all(app, monkeypatch, ignore_all):
+    """Test ignore __all__ config variable."""
+    app.config.autosummary_ignore_module_all = ignore_all
+    import autosummary_dummy_module
+    monkeypatch.setattr(autosummary_dummy_module, "__all__", ["Foo"], raising=False)
+    assert autosummary_dummy_module.__all__ == ["Foo"]
+    template = Mock()
+
+    generate_autosummary_content('autosummary_dummy_module', autosummary_dummy_module, None,
+                                 template, None, False, app, False, {})
+    assert template.render.call_args[0][0] == 'module'
+
+    context = template.render.call_args[0][1]
+    if not ignore_all:
+        assert context['members'] == ['Foo']
+        assert context['functions'] == []
+        assert context['all_functions'] == []
+        assert context['classes'] == ['Foo']
+        assert context['all_classes'] == ['Foo']
+        assert context['exceptions'] == []
+        assert context['all_exceptions'] == []
+        assert context['attributes'] == []
+        assert context['all_attributes'] == []
+        assert context['fullname'] == 'autosummary_dummy_module'
+        assert context['module'] == 'autosummary_dummy_module'
+        assert context['objname'] == ''
+        assert context['name'] == ''
+        assert context['objtype'] == 'module'
+    else:
+        assert sorted(context['members']) == ['CONSTANT1', 'CONSTANT2', '_Baz', '_Exc',
+                                              '__builtins__', '__cached__', '__doc__',
+                                              '__file__', '__name__',
+                                              '__package__', '_quux', 'qux']
+
+
+@pytest.mark.sphinx(testroot='ext-autosummary')
 def test_autosummary_generate_content_for_module_skipped(app):
     import autosummary_dummy_module
     template = Mock()
